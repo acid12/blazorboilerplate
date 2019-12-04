@@ -584,8 +584,12 @@ namespace BlazorBoilerplate.Server.Controllers
         [Authorize]
         public async Task<ApiResponse> ListRoles()
         {
-            var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
-            return new ApiResponse(200, "", roleList);
+            return await Task.Run(() =>
+            {
+                var roleList = _roleManager.Roles.Select(x => x.Name).ToList();
+                return new ApiResponse(200, "", roleList);
+            });
+            
         }
 
         [HttpPut]
@@ -674,7 +678,7 @@ namespace BlazorBoilerplate.Server.Controllers
             {
                 try
                 {
-                    _roleManager.CreateAsync(new IdentityRole<Guid>(newRole)).Wait();
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(newRole));
                     return new ApiResponse(200);
                 }
                 catch (Exception ex)

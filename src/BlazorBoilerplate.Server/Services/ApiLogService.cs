@@ -78,19 +78,25 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<ApiResponse> Get()
         {
-            return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
+            return await Task.Run(() =>
+            {
+                return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs));
+            });
         }
 
         public async Task<ApiResponse> GetByApplictionUserId(Guid applicationUserId)
         {
-            try
+            return await Task.Run(() =>
             {
-                return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)));
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse(400, ex.Message);
-            }
+                try
+                {
+                    return new ApiResponse(200, "Retrieved Api Log", _autoMapper.ProjectTo<ApiLogItemDto>(_db.ApiLogs.Where(a => a.ApplicationUserId == applicationUserId)));
+                }
+                catch (Exception ex)
+                {
+                    return new ApiResponse(400, ex.Message);
+                }
+            });
         }
     }
 }

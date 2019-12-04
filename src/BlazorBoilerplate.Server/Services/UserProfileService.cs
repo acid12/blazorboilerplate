@@ -27,9 +27,12 @@ namespace BlazorBoilerplate.Server.Services
 
         public async Task<ApiResponse> Get(Guid userId)
         {
-            var profileQuery = from userProf in _db.UserProfiles
-                            where userProf.UserId == userId
-                            select userProf;
+            var profileQuery = await Task.Run(() =>
+            {
+                return from userProf in _db.UserProfiles
+                                   where userProf.UserId == userId
+                                   select userProf;
+            });
 
             UserProfileDto userProfile = new UserProfileDto();
             if (!profileQuery.Any())
